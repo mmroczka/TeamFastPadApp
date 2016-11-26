@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
 //                attemptLogin();
-                startMyWorkouts();
+                startMainActivity();
             }
         });
 
@@ -349,8 +349,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    private void startMyWorkouts(){
-        Intent intent = new Intent(this, MyWorkoutsActivity.class);
+    private void startMainActivity(){
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 }
