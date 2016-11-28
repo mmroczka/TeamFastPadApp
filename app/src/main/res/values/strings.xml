@@ -93,5 +93,6 @@
     <string name="use_videos">Use Videos During Workout</string>
     <string name="autoplay_vids">Auto-Play Videos</string>
     <string name="skip_exercise">Skip to Next Exercise After Rest Timer Expires</string>
+    <string name="title_activity_workout">WorkoutActivity</string>
 
 </resources>

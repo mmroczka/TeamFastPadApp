@@ -12,5 +12,51 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="fastpad.com.teamfastpadapp.WorkoutActivity"
     tools:showIn="@layout/activity_workout">
+    <LinearLayout
+        android:id="@+id/linearLayoutTop"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp">
 
+        <TextView
+            tools:text="Drill Name"
+            android:textSize="20sp"
+            android:paddingLeft="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewDrillName"
+            android:layout_weight="2" />
+
+        <TextView
+            tools:text="Drill: 1 of 18"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewDrillNumber"
+            android:layout_weight="1" />
+    </LinearLayout>
+    <VideoView
+        android:id="@+id/videoViewR"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_below="@+id/linearLayoutTop"
+        android:adjustViewBounds="true"
+        android:scaleType="center" />
+    <TextView
+        tools:text="Drill: 1 of 18"
+        android:textSize="20sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewDrillNumbers"
+        android:layout_below="@+id/videoViewR"
+        android:layout_weight="1" />
 </RelativeLayout>
+
+
