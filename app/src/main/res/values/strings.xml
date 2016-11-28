@@ -89,4 +89,9 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+    <string name="use_gifs">Use GIFs During Workout</string>
+    <string name="use_videos">Use Videos During Workout</string>
+    <string name="autoplay_vids">Auto-Play Videos</string>
+    <string name="skip_exercise">Skip to Next Exercise After Rest Timer Expires</string>
+
 </resources>

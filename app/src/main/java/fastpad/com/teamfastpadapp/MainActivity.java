@@ -13,19 +13,39 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button mMyWorkoutsButton = (Button) findViewById(R.id.btnMyWorkouts);
-        mMyWorkoutsButton.setOnClickListener(new View.OnClickListener() {
+        Button myWorkoutsButton = (Button) findViewById(R.id.btnMyWorkouts);
+        myWorkoutsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                workoutList();
+                launchWorkoutList();
+            }
+        });
+
+        Button settingsButton = (Button) findViewById(R.id.btnSettings);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchSettings();
+            }
+        });
+
+        Button logoutButton = (Button) findViewById(R.id.btnLogOut);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
     }
-    private void workoutList(){
+
+    private void launchWorkoutList(){
         Intent intent = new Intent(this, WorkoutListActivity.class);
         startActivity(intent);
     }
 
-
+    private void launchSettings(){
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
 
 }
