@@ -49,14 +49,6 @@
         android:layout_below="@+id/linearLayoutTop"
         android:adjustViewBounds="true"
         android:scaleType="center" />
-    <TextView
-        tools:text="Drill: 1 of 18"
-        android:textSize="20sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewDrillNumbers"
-        android:layout_below="@+id/videoViewR"
-        android:layout_weight="1" />
 </RelativeLayout>
 
 
