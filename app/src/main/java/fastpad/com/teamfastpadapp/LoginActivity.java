@@ -108,8 +108,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
 //                attemptLogin();
-                httpCall();
-//                startMainActivity();
+                startMainActivity();
             }
         });
 
@@ -302,7 +301,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
-
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -368,82 +366,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
-    }
-
-    private void httpCall() {
-        //OkHTTP Connection
-
-        if(isNetworkAvailable()) {
-            OkHttpClient client = new OkHttpClient();
-            String root = "http://www.teamfastpad.xyz";
-            String url = root + "/" + "api/Workouts";
-            Request request = new Request.Builder()
-                    .url(url)
-                    .build();
-
-            Call call = client.newCall(request);
-            call.enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.d("Call failed", "Invalid API call! Error: " + e.getMessage(), e);
-                    Toast.makeText(getApplicationContext(), "onFailure()", Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    String responseData = response.body().string();
-
-                    if (response.isSuccessful()) {
-                        Log.d("HTTP Success!", "200! Contents: " + responseData);
-
-                        // if the request JSON string isn't empty...
-                        if (responseData != null) {
-                            try {
-                                HashMap<String, String> workoutHashMap = new HashMap<String, String>();
-                                JSONArray workouts = new JSONArray(responseData);
-
-                                for (int i = 0; i < workouts.length(); i++) {
-                                    JSONObject w = workouts.getJSONObject(i);
-
-                                    String id = w.getString("Id");
-                                    String name = w.getString("Name");
-                                    workoutHashMap.put("Id", id);
-                                    workoutHashMap.put("Name", name);
-                                }
-//                                Toast.makeText(getApplicationContext(), "Workouts received: " + workoutHashMap.size(), Toast.LENGTH_SHORT).show();
-                            } catch (final JSONException e) {
-                                Log.e("OnResponse error tag", "Json parsing error: " + e.getMessage());
-                            }
-                        }
-                    } else {
-//                        alertUserAboutError();
-                        Log.e("HTTP Error!", "Error! Contents: " + responseData);
-                    }
-                }
-            });
-        } else{
-//            Toast.makeText(getApplicationContext(), "Network unavailable", Toast.LENGTH_SHORT).show();
-
-        }
-
-
-    }
-
-    private boolean isNetworkAvailable() {
-//        ConnectivityManager manager = (ConnectivityManager)
-//                getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-//        boolean isAvailable = false;
-//        if (networkInfo != null && networkInfo.isConnected()){
-//            isAvailable = true;
-//        }
-//        return isAvailable;
-        return true;
-    }
-
-    private void alertUserAboutError() {
-        AlertDialogFragment dialog = new AlertDialogFragment();
-        dialog.show(getFragmentManager(), "error_dialog");
     }
 
     private void startMainActivity(){
