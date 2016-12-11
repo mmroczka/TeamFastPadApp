@@ -30,8 +30,11 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class WorkoutListActivity extends ListActivity {
+    public static final String WORKOUT = "WORKOUT";
     private ListView listView;
     private TextView workoutLabel;
+    private String domainName = "http://www.teamfastpad.xyz/";
+    private String allWorkouts = "api/Workouts/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +50,7 @@ public class WorkoutListActivity extends ListActivity {
 
         if(isNetworkAvailable()) {
             OkHttpClient client = new OkHttpClient();
-            String root = "http://www.teamfastpad.xyz";
-            String url = root + "/" + "api/Workouts";
+            String url = domainName + allWorkouts;
             Request request = new Request.Builder()
                     .url(url)
                     .build();
@@ -83,20 +85,19 @@ public class WorkoutListActivity extends ListActivity {
             });
         } else{
             Toast.makeText(getApplicationContext(), "Network unavailable", Toast.LENGTH_SHORT).show();
-
         }
     }
 
     private void displayList(ArrayList<WorkoutListObject> workoutList) {
         if(workoutList.isEmpty()) {
             workoutList = new ArrayList<WorkoutListObject>();
-            workoutList.add(new WorkoutListObject(1, "Workout A"));
+            workoutList.add(new WorkoutListObject(1, "something wrong in displayList function"));
             workoutList.add(new WorkoutListObject(2, "Workout B"));
             workoutList.add(new WorkoutListObject(3, "Workout C"));
         }
         else if(workoutList == null){
             workoutList = new ArrayList<WorkoutListObject>();
-            workoutList.add(new WorkoutListObject(1, "Workout D"));
+            workoutList.add(new WorkoutListObject(1, "error in displayList function"));
             workoutList.add(new WorkoutListObject(2, "Workout E"));
             workoutList.add(new WorkoutListObject(3, "Workout F"));
         }
@@ -116,9 +117,8 @@ public class WorkoutListActivity extends ListActivity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-                WorkoutListObject w = (WorkoutListObject) parent.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(), w.name, Toast.LENGTH_SHORT).show();
-                launchWorkoutActivity();
+                WorkoutListObject selectedWorkout = (WorkoutListObject) parent.getItemAtPosition(position);
+                getWorkoutByIdFromAPI(selectedWorkout.id);
             }
         });
     }
@@ -148,6 +148,84 @@ public class WorkoutListActivity extends ListActivity {
         return workoutList;
     }
 
+    private void getWorkoutByIdFromAPI(long workoutId){
+        if(isNetworkAvailable()) {
+            OkHttpClient client = new OkHttpClient();
+            String url = domainName + allWorkouts + Long.toString(workoutId);
+            Request request = new Request.Builder()
+                    .url(url)
+                    .build();
+            Call call = client.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("Call failed", "Invalid API call! Error: " + e.getMessage(), e);
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String responseData = response.body().string();
+
+                    if (response.isSuccessful()) {
+                        Log.d("HTTP Success!", "200! Contents: " + responseData);
+                        final Workout workout = parseJSONForWorkout(responseData);
+                        if(workout != null) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+//                                    Toast.makeText(getApplicationContext(), workout.getDescription(), Toast.LENGTH_SHORT).show();
+                                    launchWorkoutActivity(workout);
+                                }
+                            });
+                        }
+                    } else {
+                        alertUserAboutError();
+                        Log.e("HTTP Error!", "m mError! Contents: " + responseData);
+                    }
+                }
+            });
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Network unavailable", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private Workout parseJSONForWorkout(String responseData) {
+        // if the request JSON string isn't empty...
+        Workout workout = null;
+        ArrayList<Drill> drill = new ArrayList<Drill>();
+        if (responseData != null) {
+            try {
+                workout = new Workout();
+                JSONObject root = new JSONObject(responseData);
+                // set workout attributes
+                workout.setId(root.getLong("Id"));
+                workout.setName(root.getString("Name"));
+                workout.setDescription(root.getString("Description"));
+
+                JSONArray workoutElements = root.getJSONArray("WorkoutElements");
+                ArrayList<Drill> drills = new ArrayList<>();
+                for(int i = 0; i < workoutElements.length(); i++){
+                    JSONObject d = workoutElements.getJSONObject(i);
+                    long drillId = d.getLong("DrillId");
+                    long workoutElementId = d.getLong("Id");
+                    int difficulty = d.getInt("Difficulty");
+                    String name = d.getString("Name");
+                    String videoUrl = d.getString("VideoUrl");
+                    String gifUrl = d.getString("AnimationUrl");
+                    String description = d.getString("Description");
+
+                    Drill newDrill = new Drill(drillId, workoutElementId, difficulty, name, videoUrl, gifUrl, description);
+                    drills.add(newDrill);
+                }
+                workout.setDrills(drills);
+            } catch (final JSONException e) {
+                Log.e("OnResponse error tag", "Json parsing error: " + e.getMessage());
+            }
+        }
+        return workout;
+    }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
@@ -163,8 +241,9 @@ public class WorkoutListActivity extends ListActivity {
         dialog.show(getFragmentManager(), "error_dialog");
     }
 
-    private void launchWorkoutActivity(){
+    private void launchWorkoutActivity(Workout workout){
         Intent intent = new Intent(this, WorkoutActivity.class);
+        intent.putExtra(WORKOUT, workout);
         startActivity(intent);
     }
 }
