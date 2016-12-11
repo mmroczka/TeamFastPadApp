@@ -86,7 +86,8 @@
             android:minEms="1"
             android:maxEms="4"
             tools:text="32"
-            android:id="@+id/editText"
+            android:id="@+id/editTextNumberOfRepetitions"
+            android:textAlignment="center"
             android:layout_weight="1" />
 
         <Button
