@@ -44,7 +44,7 @@ public class WorkoutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_workout);
+        setContentView(R.layout.content_workout);
 
         Intent intent = getIntent();
         // get parcelable workout and drills from that workout

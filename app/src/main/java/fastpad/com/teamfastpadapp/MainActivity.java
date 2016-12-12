@@ -1,6 +1,8 @@
 package fastpad.com.teamfastpadapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,7 +24,11 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
-
+    public static final String MyPREFERENCES = "MyPrefs";
+    public static final String VideoOrGif = "VideoOrGif";
+    public static final String IsAutoPlayOn = "IsAutoPlayOn";
+    public static final String IsSkipOn = "IsSkipOn";
+    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +54,9 @@ public class MainActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+                boolean autoPlay = sharedPreferences.getBoolean(IsAutoPlayOn, false);
+                Toast.makeText(MainActivity.this, String.valueOf(autoPlay), Toast.LENGTH_SHORT).show();
             }
         });
     }

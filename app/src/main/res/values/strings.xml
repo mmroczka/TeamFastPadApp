@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Team FastPad App</string>
+    <string name="app_name">FastPad</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -94,8 +94,8 @@
     <string name="autoplay_vids">Auto-Play Videos</string>
     <string name="skip_exercise">Skip to Next Exercise After Rest Timer Expires</string>
     <string name="title_activity_workout">WorkoutActivity</string>
-    <string name="error_title">Oops! Sorry!</string>
-    <string name="error_message">There was an error. Please try again!</string>
+    <string name="error_title">API Error!</string>
+    <string name="error_message">There was an error accessing the Team Fastpad API. Please try again later!</string>
     <string name="error_ok_button_text">OK</string>
 
 </resources>

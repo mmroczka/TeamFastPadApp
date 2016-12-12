@@ -9,43 +9,51 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="fastpad.com.teamfastpadapp.SettingsActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <RadioButton
-        android:text="@string/use_gifs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/radioBtnUseVideos"
-        android:layout_alignStart="@+id/radioBtnUseVideos"
-        android:layout_marginTop="133dp"
-        android:id="@+id/radioBtnUseGifs" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Press Submit to Save Settings"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:layout_gravity="center_horizontal"/>
 
-    <CheckBox
-        android:text="@string/autoplay_vids"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/radioBtnUseVideos"
-        android:layout_alignStart="@+id/radioBtnUseGifs"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="49dp"
-        android:id="@+id/checkBoxAutoplayVideos" />
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioMedia">
+            <RadioButton
+                android:text="@string/use_videos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/radioBtnUseVideos"
+                android:checked="true" />
+            <RadioButton
+                android:text="@string/use_gifs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/radioBtnUseGifs" />
+        </RadioGroup>
 
-    <RadioButton
-        android:text="@string/use_videos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="62dp"
-        android:id="@+id/radioBtnUseVideos"
-        android:checked="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        <CheckBox
+            android:text="@string/autoplay_vids"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/checkBoxAutoplayVideos"/>
 
-    <CheckBox
-        android:text="@string/skip_exercise"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="113dp"
-        android:id="@+id/checkBoxSkipExercise"
-        android:layout_below="@+id/radioBtnUseGifs"
-        android:layout_centerHorizontal="true" />
+        <CheckBox
+            android:text="@string/skip_exercise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/checkBoxSkipExercise"/>
+
+        <Button
+            android:text="Save Settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnSaveSettings" />
+    </LinearLayout>
 </RelativeLayout>
