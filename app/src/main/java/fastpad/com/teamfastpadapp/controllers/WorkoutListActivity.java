@@ -217,8 +217,10 @@ public class WorkoutListActivity extends ListActivity {
                     String videoUrl = d.getString("VideoUrl");
                     String gifUrl = d.getString("AnimationUrl");
                     String description = d.getString("Description");
+                    int drillDuration = d.getInt("DrillDuration");
+                    int restDuration = d.getInt("RestDuration");
 
-                    Drill newDrill = new Drill(drillId, workoutElementId, difficulty, name, videoUrl, gifUrl, description);
+                    Drill newDrill = new Drill(drillId, workoutElementId, difficulty, name, videoUrl, gifUrl, description, drillDuration, restDuration);
                     drills.add(newDrill);
                 }
                 workout.setDrills(drills);
