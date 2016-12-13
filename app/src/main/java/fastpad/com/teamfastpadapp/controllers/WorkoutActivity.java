@@ -1,6 +1,7 @@
 package fastpad.com.teamfastpadapp.controllers;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,8 @@ import fastpad.com.teamfastpadapp.objects.Drill;
 import fastpad.com.teamfastpadapp.objects.Workout;
 
 public class WorkoutActivity extends AppCompatActivity {
+    // perferences variables
+    SharedPreferences sharedPreferences;
 
     // variables for catching parcelable workout from WorkoutListActivity
     private Workout workout;
@@ -26,6 +29,7 @@ public class WorkoutActivity extends AppCompatActivity {
     public int drill_num_index = 0;
     public int numberOfWorkSeconds = 0;
     public int numberOfRestSeconds = 0;
+
 
     // variables for keeping track of current state of the workout
     public CountDownTimer timerForWork = null;
@@ -50,9 +54,10 @@ public class WorkoutActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         // get parcelable workout and drills from that workout
-        this.workout = intent.getParcelableExtra(WorkoutListActivity.WORKOUT);
+        workout = intent.getParcelableExtra(WorkoutListActivity.WORKOUT);
         drills = this.workout.getDrills();
         currentDrill = drills.get(drill_num_index);
+
 
         // set timer periods from workout object
 

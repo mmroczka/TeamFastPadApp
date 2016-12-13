@@ -29,11 +29,26 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import android.util.Log;
 
+import fastpad.com.teamfastpadapp.AlertDialogFragment;
 import fastpad.com.teamfastpadapp.R;
+import fastpad.com.teamfastpadapp.objects.WorkoutListObject;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -46,7 +61,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
-
+    public static final MediaType JSON
+            = MediaType.parse("application/json; charset=utf-8");
     /**
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
@@ -90,6 +106,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
 //                attemptLogin();
+                convertDataToJSONAndCallPost();
                 startMainActivity();
             }
         });
@@ -348,6 +365,80 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    public void convertDataToJSONAndCallPost(){
+        EditText emailBox = (EditText) findViewById(R.id.email);
+        String email = emailBox.getText().toString();
+
+        EditText passBox = (EditText) findViewById(R.id.password);
+        String password = passBox.getText().toString();
+
+        JSONObject dataToSend = new JSONObject();
+
+        try {
+            dataToSend.put("Email", email);
+            dataToSend.put("Password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String url = "http://www.teamfastpad.xyz/Account/Login";
+
+        String jsonObjectAsString = dataToSend.toString();
+
+        try {
+            Log.d("JSON Bug", "Right before getting response variable from post function");
+            post(url, jsonObjectAsString);
+//            Log.d("JSON Bug", "Response is: " + response);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //TODO add alert box saying the post request didn't work if it fails
+        }
+    }
+
+    public void post(String url, String jsonObjectAsString) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody body = RequestBody.create(JSON, jsonObjectAsString);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+        Call call = client.newCall(request);
+        //////
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("Call failed", "Invalid API call! Error: " + e.getMessage(), e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+
+                if (response.isSuccessful()) {
+                    Log.d("HTTP Success!", "200! Contents: " + responseData);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+//                                Toast.makeText(LoginActivity.this, "Successful Post!", Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+                } else {
+                    alertUserAboutError();
+                    Log.e("HTTP Error!", "m mError! Contents: " + responseData);
+                }
+            }
+        });
+
+        ////
+    }
+
+    private void alertUserAboutError() {
+        AlertDialogFragment dialog = new AlertDialogFragment();
+        dialog.show(getFragmentManager(), "error_dialog");
     }
 
     private void startMainActivity(){
