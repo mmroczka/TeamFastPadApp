@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,9 +25,7 @@ public class WorkoutActivity extends AppCompatActivity {
     private Drill currentDrill;
 
     // variables for keeping track of current state of the workout
-    private int displayedRepetitions = 0;
-    public long displayedWorkSeconds = 30;
-    public long displayedRestSeconds = 30;
+
 
     // all other buttons, textviews and other things in this activity
     private TextView drillName;
@@ -60,53 +59,51 @@ public class WorkoutActivity extends AppCompatActivity {
         workTimer = (TextView) findViewById(R.id.textViewWorkTimer);
         restTimer = (TextView) findViewById(R.id.textViewRestTimer);
         numberOfRepetitions = (EditText) findViewById(R.id.editTextNumberOfRepetitions);
-        addRepetition = (Button)findViewById(R.id.btnAddRepetition);
+        addRepetition = (Button) findViewById(R.id.btnAddRepetition);
         subtractRepetition = (Button) findViewById(R.id.btnSubtractRepetition);
         nextExercise = (Button) findViewById(R.id.btnNextExercise);
         prevExercise = (Button) findViewById(R.id.btnPreviousExercise);
         drillVideo = (VideoView) findViewById(R.id.videoView);
 
         // set onclick listeners
-        addRepetition.setOnClickListener(new View.OnClickListener() {
+        addRepetition.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View view) {
-                numberOfRepetitions.setText(++displayedRepetitions);
+            public void onClick(View view){
+                String repetitionsBox = numberOfRepetitions.getText().toString();
+                int currentReps = 0;
+                if(isInteger(repetitionsBox)) {
+                    currentReps = Integer.valueOf(repetitionsBox);
+                }
+                if(currentReps >= 10000){
+                    numberOfRepetitions.setText(Integer.toString(10000));
+                }
+                else{
+                    numberOfRepetitions.setText(Integer.toString(++currentReps));
+                }
             }
         });
 
-        subtractRepetition.setOnClickListener(new View.OnClickListener() {
+        subtractRepetition.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View view) {
-                numberOfRepetitions.setText(--displayedRepetitions);
+            public void onClick(View view){
+                String repetitionsBox = numberOfRepetitions.getText().toString();
+                int currentReps = 0;
+                if(isInteger(repetitionsBox)) {
+                    currentReps = Integer.valueOf(repetitionsBox);
+                }
+                if(currentReps <= 0){
+                    numberOfRepetitions.setText(Integer.toString(0));
+                }
+                else{
+                    numberOfRepetitions.setText(Integer.toString(--currentReps));
+                }
             }
         });
 
         nextExercise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                long millisecondsToRun = 30000; // run for 30 seconds
-                long millisecondsInterval = 1000; // pause interval
-                new CountDownTimer(millisecondsToRun, millisecondsInterval){
-                    public void onTick(long millisecondsUntilFinished){
-                        workTimer.setText("Work: " + millisecondsUntilFinished / 1000);
-                        displayedWorkSeconds--;
-                    }
-
-                    public void onFinish(){
-                        workTimer.setText("--");
-                    }
-                }.start();
-
-                new CountDownTimer(millisecondsToRun, millisecondsInterval){
-                    public void onTick(long millisecondsUntilFinished){
-                        restTimer.setText("Rest: " + millisecondsUntilFinished / 1000);
-                        displayedRestSeconds--;
-                    }
-
-                    public void onFinish(){
-                        restTimer.setText("--");
-                    }
-                }.start();
+                updateDisplay();
             }
         });
 
@@ -120,9 +117,32 @@ public class WorkoutActivity extends AppCompatActivity {
         toast(workout.getDescription());
     }
 
+    private void updateDisplay() {
+
+        long millisecondsToRun = 5000; // run for 30 seconds
+        long millisecondsInterval = 1000; // pause interval
+        new CountDownTimer(millisecondsToRun, millisecondsInterval){
+            public void onTick(long millisecondsUntilFinished){
+                workTimer.setText("Work: " + millisecondsUntilFinished / 1000);
+            }
+
+            public void onFinish(){
+                workTimer.setText("--");
+            }
+        }.start();
+    }
+
 
     private void toast(String toast){
         Toast.makeText(getApplicationContext(), toast, Toast.LENGTH_SHORT).show();
     }
 
+    public boolean isInteger(String string) {
+        try {
+            Integer.valueOf(string);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 }
