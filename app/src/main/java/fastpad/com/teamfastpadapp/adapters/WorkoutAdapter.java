@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import fastpad.com.teamfastpadapp.R;
-import fastpad.com.teamfastpadapp.WorkoutListObject;
+import fastpad.com.teamfastpadapp.objects.WorkoutListObject;
 
 /**
  * Created by JARVIS on 12/10/2016.

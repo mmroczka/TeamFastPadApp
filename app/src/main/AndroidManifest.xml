@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".LoginActivity"
+            android:name=".controllers.LoginActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,17 +24,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WorkoutListActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".SettingsActivity" />
+        <activity android:name=".controllers.WorkoutListActivity" />
+        <activity android:name=".controllers.MainActivity" />
+        <activity android:name=".controllers.SettingsActivity" />
         <activity
-            android:name=".WorkoutActivity"
+            android:name=".controllers.WorkoutActivity"
             android:label="@string/title_activity_workout"
-            android:parentActivityName=".WorkoutListActivity"
+            android:parentActivityName=".controllers.WorkoutListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="fastpad.com.teamfastpadapp.WorkoutListActivity" />
+                android:value="fastpad.com.teamfastpadapp.controllers.WorkoutListActivity" />
         </activity>
     </application>
 

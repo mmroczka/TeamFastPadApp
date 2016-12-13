@@ -1,4 +1,4 @@
-package fastpad.com.teamfastpadapp;
+package fastpad.com.teamfastpadapp.controllers;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

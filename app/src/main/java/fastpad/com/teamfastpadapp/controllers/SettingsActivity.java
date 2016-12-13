@@ -1,4 +1,4 @@
-package fastpad.com.teamfastpadapp;
+package fastpad.com.teamfastpadapp.controllers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,6 +14,8 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import java.util.Map;
+
+import fastpad.com.teamfastpadapp.R;
 
 public class SettingsActivity extends AppCompatActivity {
     public static final String MyPREFERENCES = "MyPrefs";

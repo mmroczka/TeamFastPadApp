@@ -1,27 +1,15 @@
-package fastpad.com.teamfastpadapp;
+package fastpad.com.teamfastpadapp.controllers;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.HashMap;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import fastpad.com.teamfastpadapp.R;
 
 public class MainActivity extends AppCompatActivity {
     public static final String MyPREFERENCES = "MyPrefs";

@@ -1,4 +1,4 @@
-package fastpad.com.teamfastpadapp;
+package fastpad.com.teamfastpadapp.controllers;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -6,11 +6,9 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,7 +20,12 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import fastpad.com.teamfastpadapp.AlertDialogFragment;
+import fastpad.com.teamfastpadapp.R;
 import fastpad.com.teamfastpadapp.adapters.WorkoutAdapter;
+import fastpad.com.teamfastpadapp.objects.Drill;
+import fastpad.com.teamfastpadapp.objects.Workout;
+import fastpad.com.teamfastpadapp.objects.WorkoutListObject;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -39,7 +42,7 @@ public class WorkoutListActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_workouts);
+        setContentView(R.layout.activity_workouts_list);
         getWorkoutsFromAPI();
 
 
