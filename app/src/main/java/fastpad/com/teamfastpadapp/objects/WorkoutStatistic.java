@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 
 public class WorkoutStatistic implements Parcelable{
-    private int WorkoutId;
+    private long WorkoutId;
     private String StartDateTime;
     private String EndDateTime;
     private ArrayList<DrillStatistic> DrillStatistics = new ArrayList<>();
@@ -21,7 +21,7 @@ public class WorkoutStatistic implements Parcelable{
 
 
     protected WorkoutStatistic(Parcel in) {
-        WorkoutId = in.readInt();
+        WorkoutId = in.readLong();
         StartDateTime = in.readString();
         EndDateTime = in.readString();
         in.readTypedList(DrillStatistics, DrillStatistic.CREATOR);
@@ -46,17 +46,17 @@ public class WorkoutStatistic implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(WorkoutId);
+        dest.writeLong(WorkoutId);
         dest.writeString(StartDateTime);
         dest.writeString(EndDateTime);
         dest.writeTypedList(DrillStatistics);
     }
 
-    public int getWorkoutId() {
+    public long getWorkoutId() {
         return WorkoutId;
     }
 
-    public void setWorkoutId(int workoutId) {
+    public void setWorkoutId(long workoutId) {
         WorkoutId = workoutId;
     }
 

@@ -18,7 +18,7 @@ public class DrillStatistic implements Parcelable{
     }
 
     protected DrillStatistic(Parcel in) {
-        WorkoutElementId = in.readInt();
+        WorkoutElementId = in.readLong();
         CompletedRepetitions = in.readInt();
     }
 

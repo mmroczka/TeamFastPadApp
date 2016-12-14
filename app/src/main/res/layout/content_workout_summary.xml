@@ -13,4 +13,12 @@
     tools:context="fastpad.com.teamfastpadapp.controllers.WorkoutSummaryActivity"
     tools:showIn="@layout/activity_workout_summary">
 
+
+    <Button
+        android:text="Save Workout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/btnSaveWorkout" />
 </RelativeLayout>

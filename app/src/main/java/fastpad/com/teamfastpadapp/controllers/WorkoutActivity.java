@@ -26,6 +26,7 @@ import fastpad.com.teamfastpadapp.objects.Workout;
 import fastpad.com.teamfastpadapp.objects.WorkoutStatistic;
 
 public class WorkoutActivity extends AppCompatActivity {
+    public static final String WORKOUTSTATISTIC = "WORKOUTSTATISTIC";
     // perferences variables
     SharedPreferences sharedPreferences;
 
@@ -155,7 +156,7 @@ public class WorkoutActivity extends AppCompatActivity {
             updateDisplay();
         }
         else{
-            endWorkout();
+            launchSummaryActivity();
         }
     }
 
@@ -266,16 +267,17 @@ public class WorkoutActivity extends AppCompatActivity {
         return nowAsISO;
     }
 
-    public void makeWorkoutStatistic(){
+    public WorkoutStatistic makeWorkoutStatistic(){
         // record ending time for workoutstatistic
         endDateTime = getCurrentDateTimeISOAsString();
-
-        WorkoutStatistic w = new WorkoutStatistic();
-        w.setStartDateTime(startDateTime);
-        w.setEndDateTime(endDateTime);
+        WorkoutStatistic workoutStatistic = new WorkoutStatistic();
+        workoutStatistic.setStartDateTime(startDateTime);
+        workoutStatistic.setEndDateTime(endDateTime);
+        workoutStatistic.setWorkoutId(workout.getId());
         Log.d("StartDateTime", startDateTime);
         Log.d("EndDateTime", endDateTime);
-        w.setDrillStatistics(drillStats);
+        workoutStatistic.setDrillStatistics(drillStats);
+        return workoutStatistic;
     }
 
     public void updateDrillStatistic(){
@@ -289,8 +291,6 @@ public class WorkoutActivity extends AppCompatActivity {
 
         // make the new DrillStatistic...
         DrillStatistic stat = new DrillStatistic(workoutElementId, completedReps);
-        // TODO add drill stat correctly, then call it from buttons or onFinish then send makeWorkoutstatistic
-
 
         try {
             // get the drill at the current drill index
@@ -306,11 +306,10 @@ public class WorkoutActivity extends AppCompatActivity {
         }
     }
 
-    public void endWorkout(){
-//        for(DrillStatistic stat : drillStats){
-//            Log.d("DrillStatistic ", "WorkoutElementId: " + Long.toString(stat.getWorkoutElementId()) + "  Reps: " + Integer.toString(stat.getCompletedRepetitions()));
-//        }
-        makeWorkoutStatistic();
-
+    private void launchSummaryActivity(){
+        WorkoutStatistic workoutStat = makeWorkoutStatistic();
+        Intent intent = new Intent(this, WorkoutSummaryActivity.class);
+        intent.putExtra(WORKOUTSTATISTIC, workoutStat);
+        startActivity(intent);
     }
 }
