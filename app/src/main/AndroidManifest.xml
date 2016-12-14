@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -35,6 +35,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fastpad.com.teamfastpadapp.controllers.WorkoutListActivity" />
+        </activity>
+        <activity
+            android:name=".controllers.WorkoutSummaryActivity"
+            android:label="@string/title_activity_workout_summary"
+            android:parentActivityName=".controllers.WorkoutActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="fastpad.com.teamfastpadapp.controllers.WorkoutActivity" />
         </activity>
     </application>
 

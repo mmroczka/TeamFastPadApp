@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -168,9 +169,15 @@ public class WorkoutActivity extends AppCompatActivity {
     }
 
     private void updateDisplay() {
-        updateDrillDisplay();
+        // update the drill data
+        updateDrillData();
+
+        // update the display of the new drill
         drillNameLabel.setText(currentDrill.getName());
         drillNumberLabel.setText("Drill: " + (drill_num_index+1) + " of " + drills.size());
+        setReps();
+
+        // figure out time to set timers to
         if(currentDrill.getDrillDuration() != 0){
             numberOfWorkSeconds = currentDrill.getDrillDuration();
         }
@@ -183,6 +190,7 @@ public class WorkoutActivity extends AppCompatActivity {
             timerForWork.cancel();
         }
 
+        // actually create timers
         timerForWork = new CountDownTimer(1000*numberOfWorkSeconds+1000, 1000){
             public void onTick(long millisecondsUntilFinished){
                 workTimerLabel.setText("Work: " + millisecondsUntilFinished / 1000);
@@ -208,6 +216,23 @@ public class WorkoutActivity extends AppCompatActivity {
 
     }
 
+    private void setReps() {
+        int savedRepetition = 0;
+        try {
+            // get the drill at the current drill index
+            DrillStatistic preExistingDrill = drillStats.get(drill_num_index);
+            // if the drill is not null then it already exist, so just replace that current drill...
+            if (preExistingDrill != null) {
+                savedRepetition = preExistingDrill.getCompletedRepetitions();
+            }
+
+        } catch ( IndexOutOfBoundsException e ) {
+            // if we get an IndexOutOfBoundsException then that means the drill hasn't already been added so we just set the reps box to 0
+            savedRepetition = 0;
+        }
+        numberOfRepsBox.setText(Integer.toString(savedRepetition));
+    }
+
 
     private void toast(String toast){
         Toast.makeText(getApplicationContext(), toast, Toast.LENGTH_SHORT).show();
@@ -222,7 +247,7 @@ public class WorkoutActivity extends AppCompatActivity {
         }
     }
 
-    public void updateDrillDisplay(){
+    public void updateDrillData(){
         currentDrill = drills.get(drill_num_index);
         numberOfWorkSeconds = 0;
         numberOfRestSeconds = 0;
@@ -248,7 +273,9 @@ public class WorkoutActivity extends AppCompatActivity {
         WorkoutStatistic w = new WorkoutStatistic();
         w.setStartDateTime(startDateTime);
         w.setEndDateTime(endDateTime);
-
+        Log.d("StartDateTime", startDateTime);
+        Log.d("EndDateTime", endDateTime);
+        w.setDrillStatistics(drillStats);
     }
 
     public void updateDrillStatistic(){
@@ -280,7 +307,10 @@ public class WorkoutActivity extends AppCompatActivity {
     }
 
     public void endWorkout(){
-        String lastReps = Integer.toString(drillStats.get(drillStats.size()-1).getCompletedRepetitions());
-        Toast.makeText(this, "Last reps: " + lastReps, Toast.LENGTH_SHORT).show();
+//        for(DrillStatistic stat : drillStats){
+//            Log.d("DrillStatistic ", "WorkoutElementId: " + Long.toString(stat.getWorkoutElementId()) + "  Reps: " + Integer.toString(stat.getCompletedRepetitions()));
+//        }
+        makeWorkoutStatistic();
+
     }
 }
