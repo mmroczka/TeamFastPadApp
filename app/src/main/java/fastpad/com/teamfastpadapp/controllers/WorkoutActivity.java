@@ -12,11 +12,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 import fastpad.com.teamfastpadapp.R;
 import fastpad.com.teamfastpadapp.objects.Drill;
+import fastpad.com.teamfastpadapp.objects.DrillStatistic;
 import fastpad.com.teamfastpadapp.objects.Workout;
+import fastpad.com.teamfastpadapp.objects.WorkoutStatistic;
 
 public class WorkoutActivity extends AppCompatActivity {
     // perferences variables
@@ -29,6 +35,9 @@ public class WorkoutActivity extends AppCompatActivity {
     public int drill_num_index = 0;
     public int numberOfWorkSeconds = 0;
     public int numberOfRestSeconds = 0;
+    public String startDateTime = getCurrentDateTimeISOAsString();
+    public String endDateTime;
+    public ArrayList<DrillStatistic> drillStats = new ArrayList<>();
 
 
     // variables for keeping track of current state of the workout
@@ -114,34 +123,39 @@ public class WorkoutActivity extends AppCompatActivity {
         nextExercise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToPrevExercise();
+                goToNextExercise();
             }
         });
 
         prevExercise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToNextExercise();
+                goToPrevExercise();
             }
         });
-
-
     }
 
     private void goToPrevExercise() {
-        if(drill_num_index+1 < drills.size()){
-            drill_num_index++;
+        updateDrillStatistic();
+        if(drill_num_index > 0){
+            drill_num_index--;
+            cancelTimers();
+            updateDisplay();
+        } else{
+            Toast.makeText(this, "No previous drills!", Toast.LENGTH_SHORT).show();
         }
-        cancelTimers();
-        updateDisplay();
     }
 
     private void goToNextExercise() {
-        if(drill_num_index > 0){
-            drill_num_index--;
+        updateDrillStatistic();
+        if(drill_num_index+1 < drills.size()){
+            drill_num_index++;
+            cancelTimers();
+            updateDisplay();
         }
-        cancelTimers();
-        updateDisplay();
+        else{
+            endWorkout();
+        }
     }
 
     private void cancelTimers() {
@@ -154,7 +168,7 @@ public class WorkoutActivity extends AppCompatActivity {
     }
 
     private void updateDisplay() {
-        updateDrill();
+        updateDrillDisplay();
         drillNameLabel.setText(currentDrill.getName());
         drillNumberLabel.setText("Drill: " + (drill_num_index+1) + " of " + drills.size());
         if(currentDrill.getDrillDuration() != 0){
@@ -187,7 +201,6 @@ public class WorkoutActivity extends AppCompatActivity {
                     @Override
                     public void onFinish() {
                         restTimerLabel.setText("Rest: --");
-
                     }
                 }.start();
             }
@@ -209,7 +222,7 @@ public class WorkoutActivity extends AppCompatActivity {
         }
     }
 
-    public void updateDrill(){
+    public void updateDrillDisplay(){
         currentDrill = drills.get(drill_num_index);
         numberOfWorkSeconds = 0;
         numberOfRestSeconds = 0;
@@ -219,5 +232,55 @@ public class WorkoutActivity extends AppCompatActivity {
         if(currentDrill.getRestDuration() != 0){
             numberOfRestSeconds = currentDrill.getRestDuration();
         }
+    }
+
+    public String getCurrentDateTimeISOAsString(){
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"); // Quoted "Z" to indicate UTC, no timezone offset
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String nowAsISO = df.format(new Date());
+        return nowAsISO;
+    }
+
+    public void makeWorkoutStatistic(){
+        // record ending time for workoutstatistic
+        endDateTime = getCurrentDateTimeISOAsString();
+
+        WorkoutStatistic w = new WorkoutStatistic();
+        w.setStartDateTime(startDateTime);
+        w.setEndDateTime(endDateTime);
+
+    }
+
+    public void updateDrillStatistic(){
+        // get the workoutelementid and repetitions so you can make a new drillstatistic...
+        long workoutElementId = currentDrill.getWorkoutElementId();
+        String repetitionsBox = numberOfRepsBox.getText().toString();
+        int completedReps = 0;
+        if(isInteger(repetitionsBox)) {
+            completedReps = Integer.valueOf(repetitionsBox);
+        }
+
+        // make the new DrillStatistic...
+        DrillStatistic stat = new DrillStatistic(workoutElementId, completedReps);
+        // TODO add drill stat correctly, then call it from buttons or onFinish then send makeWorkoutstatistic
+
+
+        try {
+            // get the drill at the current drill index
+            DrillStatistic drillExists = drillStats.get( drill_num_index );
+
+            // if the drill is not null then it already exist, so just replace that current drill...
+            if(drillExists != null){
+                drillStats.set(drill_num_index, stat);
+            }
+        } catch ( IndexOutOfBoundsException e ) {
+            // if we get an IndexOutOfBoundsException then that means the drill hasn't already been added, so we need to add it
+            drillStats.add( stat );
+        }
+    }
+
+    public void endWorkout(){
+        String lastReps = Integer.toString(drillStats.get(drillStats.size()-1).getCompletedRepetitions());
+        Toast.makeText(this, "Last reps: " + lastReps, Toast.LENGTH_SHORT).show();
     }
 }
