@@ -2,8 +2,6 @@ package fastpad.com.teamfastpadapp.controllers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,24 +11,22 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import java.util.Map;
-
 import fastpad.com.teamfastpadapp.R;
 
 public class SettingsActivity extends AppCompatActivity {
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String VideoOrGif = "VideoOrGif";
-    public static final String IsAutoPlayOn = "IsAutoPlayOn";
+    public static final String IsMediaControlsOn = "IsMediaControlsOn";
     public static final String IsSkipOn = "IsSkipOn";
 
     SharedPreferences sharedPreferences;
     public String videoOrGif;
-    public boolean autoPlay;
+    public boolean isMediaControls;
     boolean autoSkipToNextExercise;
 
     private RadioGroup radioGroup;
     private RadioButton radioButton;
-    private CheckBox checkBoxForVideos;
+    private CheckBox checkBoxForMediaControls;
     private CheckBox checkBoxAutoSkipToNextExercise;
     private Button btnSaveSettings;
 
@@ -57,10 +53,10 @@ public class SettingsActivity extends AppCompatActivity {
                     videoOrGif = "Gif";
                 }
 
-                if(checkBoxForVideos.isChecked()){
-                    autoPlay = true;
+                if(checkBoxForMediaControls.isChecked()){
+                    isMediaControls = true;
                 } else{
-                    autoPlay = false;
+                    isMediaControls = false;
                 }
 
                 if(checkBoxAutoSkipToNextExercise.isChecked()){
@@ -71,17 +67,19 @@ public class SettingsActivity extends AppCompatActivity {
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(VideoOrGif, videoOrGif);
-                editor.putBoolean(String.valueOf(IsAutoPlayOn), autoPlay);
+                editor.putBoolean(String.valueOf(IsMediaControlsOn), isMediaControls);
                 editor.putBoolean(String.valueOf(IsSkipOn), autoSkipToNextExercise);
                 editor.commit();
 
+                // let user know settings are saved
+                Toast.makeText(SettingsActivity.this, "Settings Saved!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void initUIVariablesAndDisplaySettings() {
         radioButton = (RadioButton) findViewById(R.id.radioBtnUseVideos);
-        checkBoxForVideos = (CheckBox) findViewById(R.id.checkBoxAutoplayVideos);
+        checkBoxForMediaControls = (CheckBox) findViewById(R.id.checkBoxMediaControls);
         checkBoxAutoSkipToNextExercise = (CheckBox) findViewById(R.id.checkBoxSkipExercise);
 
         String vG = sharedPreferences.getString(VideoOrGif, null);
@@ -93,9 +91,9 @@ public class SettingsActivity extends AppCompatActivity {
             radioButton.setChecked(true);
         }
         
-        boolean isAutoPlayOn = sharedPreferences.getBoolean(IsAutoPlayOn, false);
-        if (isAutoPlayOn){
-            checkBoxForVideos.setChecked(true);
+        boolean isMediaControls = sharedPreferences.getBoolean(IsMediaControlsOn, false);
+        if (isMediaControls){
+            checkBoxForMediaControls.setChecked(true);
         }
 
         if(sharedPreferences.getBoolean(IsSkipOn, false)){

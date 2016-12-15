@@ -5,22 +5,17 @@
     android:layout_height="wrap_content"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
     tools:background="#ffaa00">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/workoutNameLabel"
-        android:textSize="30sp"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textSize="20sp"
         tools:text="Workout A" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/workoutIdLabel"
 
-        android:layout_alignParentRight="true"
-        android:textSize="30sp"
-        tools:text="1234"/>
 </RelativeLayout>

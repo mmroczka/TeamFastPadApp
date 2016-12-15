@@ -42,7 +42,7 @@ import okhttp3.Response;
 
 public class WorkoutSummaryActivity extends AppCompatActivity {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    public Button saveWorkoutBtn = (Button) findViewById(R.id.btnSaveWorkout);
+    public Button saveWorkoutBtn;
     public WorkoutStatistic workoutStat;
     public String workoutAsString;
     @Override
@@ -58,7 +58,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity {
         // get parcelable workout and drills from that workout
         workoutStat = intent.getParcelableExtra(WorkoutActivity.WORKOUTSTATISTIC);
         workoutAsString = convertWorkoutToGSONToString(workoutStat);
-
+        saveWorkoutBtn = (Button) findViewById(R.id.btnSaveWorkout);
 //        postWorkoutToAPI(workoutToString);
         saveWorkoutBtn.setOnClickListener(new View.OnClickListener(){
             @Override

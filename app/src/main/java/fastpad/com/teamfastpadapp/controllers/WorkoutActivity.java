@@ -1,5 +1,6 @@
 package fastpad.com.teamfastpadapp.controllers;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -27,8 +29,16 @@ import fastpad.com.teamfastpadapp.objects.WorkoutStatistic;
 
 public class WorkoutActivity extends AppCompatActivity {
     public static final String WORKOUTSTATISTIC = "WORKOUTSTATISTIC";
+
     // perferences variables
-    SharedPreferences sharedPreferences;
+    public static final String MyPREFERENCES = "MyPrefs";
+    public static final String VideoOrGif = "VideoOrGif";
+    public static final String IsMediaControlsOn = "IsMediaControlsOn";
+    public static final String IsSkipOn = "IsSkipOn";
+    public SharedPreferences sharedPreferences;
+    public boolean isSkipToNextExerciseOn = true;
+    public boolean isMediaControlsOn = true;
+    public boolean isVideoChecked = true;
 
     // variables for catching parcelable workout from WorkoutListActivity
     private Workout workout;
@@ -37,10 +47,11 @@ public class WorkoutActivity extends AppCompatActivity {
     public int drill_num_index = 0;
     public int numberOfWorkSeconds = 0;
     public int numberOfRestSeconds = 0;
+    public String currentUrl;
     public String startDateTime = getCurrentDateTimeISOAsString();
     public String endDateTime;
     public ArrayList<DrillStatistic> drillStats = new ArrayList<>();
-
+    private String domainName = "http://www.teamfastpad.xyz";
 
     // variables for keeping track of current state of the workout
     public CountDownTimer timerForWork = null;
@@ -69,25 +80,13 @@ public class WorkoutActivity extends AppCompatActivity {
         drills = this.workout.getDrills();
         currentDrill = drills.get(drill_num_index);
 
-
-        // set timer periods from workout object
-
-
-        // set textviews and labels accordingly
-        drillNameLabel = (TextView) findViewById(R.id.textViewDrillName);
-        drillNumberLabel = (TextView) findViewById(R.id.textViewDrillNumber);
-        workTimerLabel = (TextView) findViewById(R.id.textViewWorkTimer);
-        restTimerLabel = (TextView) findViewById(R.id.textViewRestTimer);
-        numberOfRepsBox = (EditText) findViewById(R.id.editTextNumberOfRepetitions);
-        numberOfRepsBox.setText("0");
-        addRepetition = (Button) findViewById(R.id.btnAddRepetition);
-        subtractRepetition = (Button) findViewById(R.id.btnSubtractRepetition);
-        nextExercise = (Button) findViewById(R.id.btnNextExercise);
-        prevExercise = (Button) findViewById(R.id.btnPreviousExercise);
-        drillVideo = (VideoView) findViewById(R.id.videoView);
+        setPreferenceVariables();
+        connectLabelsAndButtonsToVariables();
         updateDisplay();
+        createOnclickListenersForUI();
+    }
 
-        // set onclick listeners
+    public void createOnclickListenersForUI() {
         addRepetition.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -137,6 +136,33 @@ public class WorkoutActivity extends AppCompatActivity {
         });
     }
 
+    public void connectLabelsAndButtonsToVariables() {
+        drillNameLabel = (TextView) findViewById(R.id.textViewDrillName);
+        drillNumberLabel = (TextView) findViewById(R.id.textViewDrillNumber);
+        workTimerLabel = (TextView) findViewById(R.id.textViewWorkTimer);
+        restTimerLabel = (TextView) findViewById(R.id.textViewRestTimer);
+        numberOfRepsBox = (EditText) findViewById(R.id.editTextNumberOfRepetitions);
+        numberOfRepsBox.setText("0");
+        addRepetition = (Button) findViewById(R.id.btnAddRepetition);
+        subtractRepetition = (Button) findViewById(R.id.btnSubtractRepetition);
+        nextExercise = (Button) findViewById(R.id.btnNextExercise);
+        prevExercise = (Button) findViewById(R.id.btnPreviousExercise);
+        drillVideo = (VideoView) findViewById(R.id.videoView);
+        if(isMediaControlsOn) {
+            drillVideo.setMediaController(new MediaController(this));
+        }
+    }
+
+    public void setPreferenceVariables() {
+        sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        String savedSetting = sharedPreferences.getString(VideoOrGif, null);
+        if (savedSetting != null || savedSetting.equalsIgnoreCase("gif")){
+            isVideoChecked = false;
+        }
+        isSkipToNextExerciseOn = sharedPreferences.getBoolean(IsSkipOn, true);
+        isMediaControlsOn = sharedPreferences.getBoolean(IsMediaControlsOn, false);
+    }
+
     private void goToPrevExercise() {
         updateDrillStatistic();
         if(drill_num_index > 0){
@@ -176,7 +202,10 @@ public class WorkoutActivity extends AppCompatActivity {
         // update the display of the new drill
         drillNameLabel.setText(currentDrill.getName());
         drillNumberLabel.setText("Drill: " + (drill_num_index+1) + " of " + drills.size());
-        setReps();
+        setRepsInRepetitionsBox();
+
+        drillVideo.setVideoPath(currentUrl);
+        drillVideo.start();
 
         // figure out time to set timers to
         if(currentDrill.getDrillDuration() != 0){
@@ -201,6 +230,7 @@ public class WorkoutActivity extends AppCompatActivity {
                 if(timerForRest != null){
                     timerForRest.cancel();
                 }
+                drillVideo.pause();
                 timerForRest = new CountDownTimer(1000*numberOfRestSeconds+1000, 1000) {
                     @Override
                     public void onTick(long millisecondsUntilFinished) {
@@ -210,6 +240,9 @@ public class WorkoutActivity extends AppCompatActivity {
                     @Override
                     public void onFinish() {
                         restTimerLabel.setText("Rest: --");
+                        if(isSkipToNextExerciseOn){
+                            goToNextExercise();
+                        }
                     }
                 }.start();
             }
@@ -217,7 +250,7 @@ public class WorkoutActivity extends AppCompatActivity {
 
     }
 
-    private void setReps() {
+    private void setRepsInRepetitionsBox() {
         int savedRepetition = 0;
         try {
             // get the drill at the current drill index
@@ -234,20 +267,6 @@ public class WorkoutActivity extends AppCompatActivity {
         numberOfRepsBox.setText(Integer.toString(savedRepetition));
     }
 
-
-    private void toast(String toast){
-        Toast.makeText(getApplicationContext(), toast, Toast.LENGTH_SHORT).show();
-    }
-
-    public boolean isInteger(String string) {
-        try {
-            Integer.valueOf(string);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
     public void updateDrillData(){
         currentDrill = drills.get(drill_num_index);
         numberOfWorkSeconds = 0;
@@ -258,26 +277,7 @@ public class WorkoutActivity extends AppCompatActivity {
         if(currentDrill.getRestDuration() != 0){
             numberOfRestSeconds = currentDrill.getRestDuration();
         }
-    }
-
-    public String getCurrentDateTimeISOAsString(){
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"); // Quoted "Z" to indicate UTC, no timezone offset
-        df.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String nowAsISO = df.format(new Date());
-        return nowAsISO;
-    }
-
-    public WorkoutStatistic makeWorkoutStatistic(){
-        // record ending time for workoutstatistic
-        endDateTime = getCurrentDateTimeISOAsString();
-        WorkoutStatistic workoutStatistic = new WorkoutStatistic();
-        workoutStatistic.setStartDateTime(startDateTime);
-        workoutStatistic.setEndDateTime(endDateTime);
-        workoutStatistic.setWorkoutId(workout.getId());
-        Log.d("StartDateTime", startDateTime);
-        Log.d("EndDateTime", endDateTime);
-        workoutStatistic.setDrillStatistics(drillStats);
-        return workoutStatistic;
+        currentUrl = domainName + currentDrill.getVideoUrl();
     }
 
     public void updateDrillStatistic(){
@@ -312,4 +312,34 @@ public class WorkoutActivity extends AppCompatActivity {
         intent.putExtra(WORKOUTSTATISTIC, workoutStat);
         startActivity(intent);
     }
+
+    public WorkoutStatistic makeWorkoutStatistic(){
+        // record ending time for workoutstatistic
+        endDateTime = getCurrentDateTimeISOAsString();
+        WorkoutStatistic workoutStatistic = new WorkoutStatistic();
+        workoutStatistic.setStartDateTime(startDateTime);
+        workoutStatistic.setEndDateTime(endDateTime);
+        workoutStatistic.setWorkoutId(workout.getId());
+        Log.d("StartDateTime", startDateTime);
+        Log.d("EndDateTime", endDateTime);
+        workoutStatistic.setDrillStatistics(drillStats);
+        return workoutStatistic;
+    }
+
+    public String getCurrentDateTimeISOAsString(){
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"); // Quoted "Z" to indicate UTC, no timezone offset
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String nowAsISO = df.format(new Date());
+        return nowAsISO;
+    }
+
+    public boolean isInteger(String string) {
+        try {
+            Integer.valueOf(string);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
 }

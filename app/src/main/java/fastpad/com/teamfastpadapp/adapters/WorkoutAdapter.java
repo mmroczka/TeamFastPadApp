@@ -47,7 +47,7 @@ public class WorkoutAdapter extends BaseAdapter{
             // it's brand new
             convertView = LayoutInflater.from(context).inflate(R.layout.workout_list_item, null);
             holder = new ViewHolder();
-            holder.workoutIdLabel = (TextView) convertView.findViewById(R.id.workoutIdLabel);
+//            holder.workoutIdLabel = (TextView) convertView.findViewById(R.id.workoutIdLabel);
             holder.workoutNameLabel = (TextView) convertView.findViewById(R.id.workoutNameLabel);
 
             convertView.setTag(holder);
@@ -56,8 +56,8 @@ public class WorkoutAdapter extends BaseAdapter{
         }
 
         WorkoutListObject workout = workoutList.get(position);
-        String id = Long.toString(workout.getId());
-        holder.workoutIdLabel.setText(id);
+//        String id = Long.toString(workout.getId());
+//        holder.workoutIdLabel.setText(id);
         holder.workoutNameLabel.setText(workout.getName());
         return convertView;
     }
@@ -65,6 +65,6 @@ public class WorkoutAdapter extends BaseAdapter{
 
     private static class ViewHolder {
         TextView workoutNameLabel;
-        TextView workoutIdLabel;
+//        TextView workoutIdLabel;
     }
 }

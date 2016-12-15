@@ -39,10 +39,10 @@
         </RadioGroup>
 
         <CheckBox
-            android:text="@string/autoplay_vids"
+            android:text="@string/media_controls"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/checkBoxAutoplayVideos"/>
+            android:id="@+id/checkBoxMediaControls"/>
 
         <CheckBox
             android:text="@string/skip_exercise"

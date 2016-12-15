@@ -14,7 +14,7 @@ import fastpad.com.teamfastpadapp.R;
 public class MainActivity extends AppCompatActivity {
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String VideoOrGif = "VideoOrGif";
-    public static final String IsAutoPlayOn = "IsAutoPlayOn";
+    public static final String IsAutoPlayOn = "IsMediaControlsOn";
     public static final String IsSkipOn = "IsSkipOn";
     SharedPreferences sharedPreferences;
     @Override
