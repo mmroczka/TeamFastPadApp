@@ -98,5 +98,6 @@
     <string name="error_message">There was an error accessing the Team Fastpad API. Please try again later!</string>
     <string name="error_ok_button_text">OK</string>
     <string name="title_activity_workout_summary">WorkoutSummaryActivity</string>
+    <string name="save_workout">Save Workout</string>
 
 </resources>

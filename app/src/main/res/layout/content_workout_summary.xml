@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_workout_summary"
@@ -11,14 +11,24 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="fastpad.com.teamfastpadapp.controllers.WorkoutSummaryActivity"
-    tools:showIn="@layout/activity_workout_summary">
+    tools:showIn="@layout/activity_workout_summary"
+    android:orientation="vertical">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:id="@+id/textViewSummary"
+        android:scrollbars="vertical"
+        android:layout_weight="1"
+        android:fontFamily="monospace"
+        tools:textSize="20sp"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec lacinia elit. Suspendisse rhoncus justo vel volutpat facilisis. Vestibulum leo arcu, dignissim ac ex pretium, ornare fringilla ante. Vestibulum varius interdum blandit. Quisque id fermentum tortor. Cras gravida laoreet dui, at blandit quam consequat at. Pellentesque viverra quam vel magna suscipit, eget auctor tortor gravida. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Maecenas id hendrerit purus. Nullam iaculis mattis metus, sit amet venenatis justo maximus vel. Mauris fringilla tempor nunc, sit amet varius nisi cursus ut. Nullam sit amet mauris dapibus, elementum nibh id, dapibus orci.
+Donec sed leo dui. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent convallis blandit nisl, eget eleifend est interdum non. Sed aliquet maximus elit, quis consequat neque auctor eget. In tempor finibus quam, eget tristique massa sodales eget. In eu dolor non ante accumsan tristique id non ex. Aliquam finibus magna risus, volutpat ullamcorper mauris varius ut. Nunc accumsan venenatis lectus, eget fermentum augue commodo eget. Mauris consectetur elit elit, in tincidunt velit consectetur nec. Integer varius quam non nisi cursus pellentesque gravida non nibh. Sed a tellus nibh.Aenean porttitor turpis nec magna feugiat commodo."/>
 
     <Button
-        android:text="Save Workout"
-        android:layout_width="wrap_content"
+        android:text="@string/save_workout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/btnSaveWorkout" />
-</RelativeLayout>
+        android:id="@+id/btnSaveWorkout"
+        />
+</LinearLayout>

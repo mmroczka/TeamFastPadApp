@@ -6,34 +6,27 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 import fastpad.com.teamfastpadapp.AlertDialogFragment;
 import fastpad.com.teamfastpadapp.R;
+import fastpad.com.teamfastpadapp.objects.Drill;
 import fastpad.com.teamfastpadapp.objects.DrillStatistic;
+import fastpad.com.teamfastpadapp.objects.Workout;
 import fastpad.com.teamfastpadapp.objects.WorkoutStatistic;
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -43,6 +36,8 @@ import okhttp3.Response;
 public class WorkoutSummaryActivity extends AppCompatActivity {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public Button saveWorkoutBtn;
+    public TextView summaryTextView;
+    public Workout workout;
     public WorkoutStatistic workoutStat;
     public String workoutAsString;
     @Override
@@ -52,13 +47,20 @@ public class WorkoutSummaryActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Log.d("WORKOUT SUMMARY", "You made it to the workout");
+        Log.d("WORKOUT SUMMARY", "You made it to the end of the workout");
 
         Intent intent = getIntent();
         // get parcelable workout and drills from that workout
+
         workoutStat = intent.getParcelableExtra(WorkoutActivity.WORKOUTSTATISTIC);
-        workoutAsString = convertWorkoutToGSONToString(workoutStat);
+        workout = intent.getParcelableExtra(WorkoutActivity.WORKOUT);
+
         saveWorkoutBtn = (Button) findViewById(R.id.btnSaveWorkout);
+        summaryTextView = (TextView) findViewById(R.id.textViewSummary);
+
+        String summaryString = createWorkoutSummaryString();
+        summaryTextView.setText(summaryString);
+        workoutAsString = convertWorkoutToGSONToString(workoutStat);
 //        postWorkoutToAPI(workoutToString);
         saveWorkoutBtn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -66,6 +68,21 @@ public class WorkoutSummaryActivity extends AppCompatActivity {
                 new AttemptPostRequest(workoutAsString).execute();
             }
         });
+    }
+
+    private String createWorkoutSummaryString() {
+        ArrayList<Drill> drills = workout.getDrills();
+        ArrayList<DrillStatistic> drillStat = workoutStat.getDrillStatistics();
+        Drill tempDrill;
+        DrillStatistic tempDrillStatistic;
+        String summaryString = "";
+        for(int i = 0; i < drills.size(); i++){
+            tempDrill = drills.get(i);
+            tempDrillStatistic = drillStat.get(i);
+            String formattedString = padString(tempDrill.getName(), 35) + "Reps: " + tempDrillStatistic.getCompletedRepetitions() + "\n\n";
+            summaryString += formattedString;
+        }
+        return summaryString;
     }
 
     public class AttemptPostRequest extends AsyncTask<String, Void, String> {
@@ -172,5 +189,12 @@ public class WorkoutSummaryActivity extends AppCompatActivity {
             isAvailable = true;
         }
         return isAvailable;
+    }
+
+    public static String padString(String str, int leng) {
+        while (str.length() < leng){
+            str += " ";
+        }
+        return str;
     }
 }

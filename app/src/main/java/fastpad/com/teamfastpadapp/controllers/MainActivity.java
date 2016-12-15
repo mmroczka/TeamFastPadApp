@@ -49,10 +49,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-
-
-
     private void launchWorkoutList(){
         Intent intent = new Intent(this, WorkoutListActivity.class);
         startActivity(intent);

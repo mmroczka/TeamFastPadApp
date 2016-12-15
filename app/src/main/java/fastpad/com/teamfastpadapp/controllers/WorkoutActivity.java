@@ -29,7 +29,7 @@ import fastpad.com.teamfastpadapp.objects.WorkoutStatistic;
 
 public class WorkoutActivity extends AppCompatActivity {
     public static final String WORKOUTSTATISTIC = "WORKOUTSTATISTIC";
-
+    public static final String WORKOUT = "WORKOUT";
     // perferences variables
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String VideoOrGif = "VideoOrGif";
@@ -310,6 +310,7 @@ public class WorkoutActivity extends AppCompatActivity {
         WorkoutStatistic workoutStat = makeWorkoutStatistic();
         Intent intent = new Intent(this, WorkoutSummaryActivity.class);
         intent.putExtra(WORKOUTSTATISTIC, workoutStat);
+        intent.putExtra(WORKOUT, workout);
         startActivity(intent);
     }
 
